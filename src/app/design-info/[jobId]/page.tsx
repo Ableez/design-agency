@@ -1,5 +1,5 @@
 import type { SocialFormState } from "#/app/social-media-design/page";
-import DesignInfoForm from "#/components/design-info/preference-form";
+import DesignInfoForm from "#/components/design-info/design-info-form";
 import { Button } from "#/components/ui/button";
 import { Card, CardContent, CardHeader } from "#/components/ui/card";
 import type { JobData } from "#/types/jobs";
@@ -29,7 +29,7 @@ const DesignInfo = async ({ params }: Props) => {
     }
 
     return (
-      <div className="container mx-auto max-w-2xl dark:bg-black bg-white">
+      <div className="container mx-auto max-w-2xl bg-white dark:bg-black">
         <header className="sticky top-0 mb-4 flex items-center justify-between bg-black/60 px-4 py-4 backdrop-blur-xl">
           <div className="flex items-center gap-2">
             <Button
@@ -42,7 +42,7 @@ const DesignInfo = async ({ params }: Props) => {
             </Button>
             <h1 className="text-xl font-semibold">Your order</h1>
           </div>
-          
+
           <Button variant="ghost" className="flex items-center gap-2">
             <IconInfoCircleFilled className="h-6 w-6 text-blue-500" />
             <span>Help</span>
@@ -54,7 +54,7 @@ const DesignInfo = async ({ params }: Props) => {
         </h2>
 
         {/* Summary Card */}
-        <Card className="mb-8 mx-4">
+        <Card className="mx-4 mb-8">
           <CardHeader>
             <h2 className="text-lg font-semibold text-neutral-500">Summary</h2>
           </CardHeader>
@@ -86,13 +86,13 @@ const DesignInfo = async ({ params }: Props) => {
                   to your needs.
                 </p>
               </div>
-              <DesignInfoForm />
+              <DesignInfoForm jobId={jobId} />
             </CardContent>
           </Card>
         </section>
 
         {/* Footer */}
-        <footer className="text-center p-4 pb-10">
+        <footer className="p-4 pb-10 text-center">
           <p className="text-sm text-neutral-400">
             You can always talk to us if you have any questions or changes in
             mind.{" "}
