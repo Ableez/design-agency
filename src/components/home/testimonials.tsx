@@ -46,7 +46,9 @@ export default function Testimonials() {
         <IconMessage2 />
         <h4 className="text-left text-2xl font-semibold">What people say</h4>
       </div>
-      <AnimatedTestimonials testimonials={testimonials} />
+      <div className="scale-[0.95]">
+        <AnimatedTestimonials testimonials={testimonials} />
+      </div>
     </div>
   );
 }

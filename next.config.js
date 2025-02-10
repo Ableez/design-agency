@@ -23,6 +23,9 @@ const config = {
       {
         hostname: "b4b43dszid.ufs.sh",
       },
+      {
+        hostname: "lh3.googleusercontent.com",
+      },
     ],
   },
 };
