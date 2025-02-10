@@ -60,6 +60,7 @@ const SocialMediaDesign = () => {
   const [count, setCount] = useState(0);
   const router = useRouter();
   const [cookies, setCookie] = useCookies(["jobs"]);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const [isClient, setIsClient] = useState(false);
   const [socialFormState, setSocialFormState] =
@@ -72,11 +73,7 @@ const SocialMediaDesign = () => {
     socialFormState?.deliverySpeed
   );
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
+  const handleLoadSaved = useCallback(() => {
     if (!isClient) return;
 
     try {
@@ -88,8 +85,48 @@ const SocialMediaDesign = () => {
       console.error("Failed to parse stored state:", error);
       localStorage.removeItem("socialMediaFormState"); // Clear invalid data
       setSocialFormState(null);
+    } finally {
+      setHasUnsavedChanges(false);
     }
   }, [isClient]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (socialFormState) {
+        e.preventDefault(); // For modern browsers
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload); // Clean up
+    };
+  }, [socialFormState]);
+
+  useEffect(() => {
+    if (!isClient) {
+      setIsClient(true);
+    }
+  }, [isClient]);
+
+  useEffect(() => {
+    if (!isClient) return;
+    const localState = localStorage.getItem("socialMediaFormState");
+    const storedState = localState
+      ? (JSON.parse(localState) as SocialFormState)
+      : null; // null if invalid
+
+    if (storedState !== null) {
+      console.log("STORED", storedState);
+
+      setHasUnsavedChanges(true);
+      toast("Unsaved changes restored from local storage", {
+        action: <Button onClick={() => handleLoadSaved()}>Restore</Button>,
+        duration: 3000,
+      });
+    }
+  }, [handleLoadSaved, isClient]);
 
   useEffect(() => {
     if (!isClient) return;
