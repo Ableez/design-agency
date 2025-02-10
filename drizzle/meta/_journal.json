@@ -8,6 +8,20 @@
       "when": 1739119927900,
       "tag": "0000_steep_ultron",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1739200283074,
+      "tag": "0001_great_cannonball",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1739200669450,
+      "tag": "0002_peaceful_strong_guy",
+      "breakpoints": true
     }
   ]
 }

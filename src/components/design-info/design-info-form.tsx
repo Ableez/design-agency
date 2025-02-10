@@ -1,4 +1,5 @@
 "use client";
+
 import { UploadButton, UploadDropzone } from "#/lib/uploadthing";
 import { useCallback, useState, useEffect } from "react";
 import { Button } from "../ui/button";
@@ -90,7 +91,7 @@ const DesignInfoForm: React.FC<{ jobId: string }> = ({ jobId }) => {
     setImages((prevImages) => prevImages.filter((img) => img.url !== imageUrl));
   }, []);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     console.log("images", images);
     console.log({ description, images });
   }, [description, images]);

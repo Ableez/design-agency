@@ -16,6 +16,9 @@ const DesignInfo = async ({ params }: Props) => {
   const jobsCookie = (await cookies()).get("jobs")?.value;
   const jobFormState = JSON.parse(jobsCookie ?? "{}") as JobData[];
 
+
+  console.log("jobFormState::::", jobFormState);
+
   if (!jobsCookie) {
     return <ErrorMessage />;
   }
@@ -35,7 +38,7 @@ const DesignInfo = async ({ params }: Props) => {
             <Button
               variant="outline"
               size="icon"
-              className="h-12 w-12"
+              className="h-10 w-10"
               aria-label="Close"
             >
               <IconX className="h-6 w-6 text-blue-500" strokeWidth={3} />

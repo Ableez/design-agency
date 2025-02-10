@@ -60,7 +60,6 @@ const SocialMediaDesign = () => {
   const [count, setCount] = useState(0);
   const router = useRouter();
   const [cookies, setCookie] = useCookies(["jobs"]);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const [isClient, setIsClient] = useState(false);
   const [socialFormState, setSocialFormState] =
@@ -72,23 +71,6 @@ const SocialMediaDesign = () => {
     socialFormState?.platform &&
     socialFormState?.deliverySpeed
   );
-
-  const handleLoadSaved = useCallback(() => {
-    if (!isClient) return;
-
-    try {
-      const storedState = localStorage.getItem("socialMediaFormState");
-      if (storedState) {
-        setSocialFormState(JSON.parse(storedState) as SocialFormState);
-      }
-    } catch (error) {
-      console.error("Failed to parse stored state:", error);
-      localStorage.removeItem("socialMediaFormState"); // Clear invalid data
-      setSocialFormState(null);
-    } finally {
-      setHasUnsavedChanges(false);
-    }
-  }, [isClient]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -109,24 +91,6 @@ const SocialMediaDesign = () => {
       setIsClient(true);
     }
   }, [isClient]);
-
-  useEffect(() => {
-    if (!isClient) return;
-    const localState = localStorage.getItem("socialMediaFormState");
-    const storedState = localState
-      ? (JSON.parse(localState) as SocialFormState)
-      : null; // null if invalid
-
-    if (storedState !== null) {
-      console.log("STORED", storedState);
-
-      setHasUnsavedChanges(true);
-      toast("Unsaved changes restored from local storage", {
-        action: <Button onClick={() => handleLoadSaved()}>Restore</Button>,
-        duration: 3000,
-      });
-    }
-  }, [handleLoadSaved, isClient]);
 
   useEffect(() => {
     if (!isClient) return;
@@ -168,11 +132,12 @@ const SocialMediaDesign = () => {
 
     const jobId = v4();
 
-    console.log("cookies.jobs", cookies.jobs);
+    console.log("cookies.jobs", typeof cookies.jobs);
 
-    const oldJobs = cookies.jobs
-      ? (JSON.parse(cookies.jobs as string) as JobData[])
-      : [];
+    const oldJobs =
+      typeof cookies.jobs === "string"
+        ? (JSON.parse(cookies.jobs ?? "[]") as JobData[])
+        : ((cookies.jobs as JobData[]) ?? []);
 
     const newJob: JobData = {
       ...socialFormState,
@@ -262,21 +227,6 @@ const SocialMediaDesign = () => {
 
   return (
     <div className="relative h-screen overflow-x-hidden bg-white dark:bg-black">
-      <div className="fixed left-0 top-0 z-[60] flex w-full place-items-center items-center justify-between bg-gradient-to-b from-black/80 via-black/50 to-transparent p-2 align-middle">
-        <Button onClick={() => router.back()} size={"icon"} variant={"outline"}>
-          <IconArrowLeft size={24} color={"#fff"} />
-        </Button>
-
-        <div className={"flex place-items-center gap-2 align-middle"}>
-          <Button size={"icon"} variant={"secondary"}>
-            <IconShare2 size={24} color={"#fff"} />
-          </Button>
-          <Button>
-            <IconDiamondFilled size={24} color={"#fff"} />
-            <h4>Add to plan</h4>
-          </Button>
-        </div>
-      </div>
       <div className="sticky -top-2 left-0 h-[60dvh] w-full overflow-clip">
         <Carousel
           setApi={setApi}
@@ -428,7 +378,7 @@ const SocialMediaDesign = () => {
           onClick={async () => {
             await handleContinue();
           }}
-          className="w-full"
+          className="w-full hover:bg-blue-500 disabled:bg-neutral-600 disabled:opacity-100"
           disabled={!isFormComplete}
         >
           Continue

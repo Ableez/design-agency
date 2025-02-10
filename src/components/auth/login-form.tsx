@@ -91,7 +91,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
           <h1 className="mb-8 text-2xl font-bold">Login</h1>
         </div>
         <div className="grid gap-6">
-          <FormField
+          {/* <FormField
             control={form.control}
             name="emailOrPhone"
             render={({ field }) => (
@@ -119,14 +119,14 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
             disabled={isPending}
           >
             Get OTP
-          </Button>
+          </Button> */}
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-neutral-200 dark:after:border-neutral-700">
             <span className="relative z-10 bg-neutral-100 px-2 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
               Or continue with
             </span>
           </div>
           <div className="flex flex-col gap-2">
-            <Button
+            {/* <Button
               onClick={() => handlePasskey()}
               type={"button"}
               className="relative h-[2.7rem] w-full"
@@ -139,7 +139,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 className="absolute left-10 top-1/2 -translate-y-1/2"
               />
               Use passkey
-            </Button>
+            </Button> */}
             <Button
               type={"button"}
               onClick={() => handleProviderSignIn("google")}
@@ -156,7 +156,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
               Login with Google
             </Button>
 
-            <Button
+            {/* <Button
               type={"button"}
               variant="secondary"
               className="relative h-[2.7rem] w-full"
@@ -169,8 +169,8 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 className="absolute left-10 top-1/2 -translate-y-1/2"
               />
               Login with Facebook
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               type={"button"}
               variant="secondary"
               className="relative h-[2.7rem] w-full"
@@ -183,7 +183,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 className="absolute left-10 top-1/2 -translate-y-1/2"
               />
               Login with Instagram
-            </Button>
+            </Button> */}
             <Button
               onClick={async () => {
                 await handleProviderSignIn("github");
