@@ -6,6 +6,8 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { UploadedImagesCarousel } from "./uploaded-images-carousel";
 import { toast } from "sonner";
+import { createSocialMediaDesignJob } from "#/server/actions/create-social-media-design-job";
+import type { SocialFormState } from "#/app/social-media-design/page";
 
 type ImageData = {
   url: string;
@@ -15,7 +17,10 @@ type ImageData = {
   previewUrl?: string;
 };
 
-const DesignInfoForm: React.FC<{ jobId: string }> = ({ jobId }) => {
+const DesignInfoForm: React.FC<{
+  jobId: string;
+  socialMediaDesignJobInfo: SocialFormState;
+}> = ({ jobId, socialMediaDesignJobInfo }) => {
   const localStorageDescriptionKey = `designInfoDescription-${jobId}`;
   const localStorageImagesKey = `designInfoImages-${jobId}`;
 
@@ -94,11 +99,40 @@ const DesignInfoForm: React.FC<{ jobId: string }> = ({ jobId }) => {
   const handleSubmit = useCallback(async () => {
     console.log("images", images);
     console.log({ description, images });
-  }, [description, images]);
+
+    // call the server action you created here
+    await createSocialMediaDesignJob({
+      size: socialMediaDesignJobInfo.size ?? "",
+      purpose: socialMediaDesignJobInfo.purpose ?? "",
+      platform: socialMediaDesignJobInfo.platform ?? "",
+      deliverySpeed: socialMediaDesignJobInfo.deliverySpeed ?? "",
+      username: socialMediaDesignJobInfo.userInfo.username,
+      email: socialMediaDesignJobInfo.userInfo.email,
+      phone: socialMediaDesignJobInfo.userInfo.phone,
+      brand: socialMediaDesignJobInfo.userInfo.brand,
+      designDescription: description,
+      referenceImages: images.map((img) => img.url),
+      jobId: jobId,
+      timestamp: new Date().toISOString(),
+      service: "social-media-design",
+    });
+  }, [
+    description,
+    images,
+    jobId,
+    socialMediaDesignJobInfo.deliverySpeed,
+    socialMediaDesignJobInfo.platform,
+    socialMediaDesignJobInfo.purpose,
+    socialMediaDesignJobInfo.size,
+    socialMediaDesignJobInfo.userInfo.brand,
+    socialMediaDesignJobInfo.userInfo.email,
+    socialMediaDesignJobInfo.userInfo.phone,
+    socialMediaDesignJobInfo.userInfo.username,
+  ]);
 
   return (
     <div className="flex flex-col gap-4">
-      <form>
+      <form onSubmit={(e) => e.preventDefault()}>
         <h4 className="mb-1 pl-1 text-sm font-medium text-neutral-500">
           Add image: Optional
         </h4>
@@ -113,7 +147,7 @@ const DesignInfoForm: React.FC<{ jobId: string }> = ({ jobId }) => {
               onUploadProgress={(n: number) => {
                 toast(`Uploading ${n.toFixed(0)}%`, {
                   dismissible: n < 1,
-                  duration: n < 1 ? 0 : undefined,
+                  duration: n < 1 ? 99999999999 : undefined,
                 });
               }}
               onClientUploadComplete={(res) => {
@@ -170,6 +204,7 @@ const DesignInfoForm: React.FC<{ jobId: string }> = ({ jobId }) => {
         <h4 className="mb-1 pl-1 text-sm font-medium text-neutral-500">
           Description*
         </h4>
+
         <Textarea
           className="resize-none"
           placeholder="Type here..."

@@ -16,9 +16,6 @@ const DesignInfo = async ({ params }: Props) => {
   const jobsCookie = (await cookies()).get("jobs")?.value;
   const jobFormState = JSON.parse(jobsCookie ?? "{}") as JobData[];
 
-
-  console.log("jobFormState::::", jobFormState);
-
   if (!jobsCookie) {
     return <ErrorMessage />;
   }
@@ -89,7 +86,10 @@ const DesignInfo = async ({ params }: Props) => {
                   to your needs.
                 </p>
               </div>
-              <DesignInfoForm jobId={jobId} />
+              <DesignInfoForm
+                socialMediaDesignJobInfo={socialMediaDesignJobInfo}
+                jobId={jobId}
+              />
             </CardContent>
           </Card>
         </section>
