@@ -10,7 +10,10 @@ export const auth = betterAuth({
     provider: "pg",
   }),
   secret: env.BETTER_AUTH_SECRET,
-  baseURL: "http://localhost:3000",
+  baseURL:
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://ableez.vercel.app",
   logger: {
     level: "debug",
     log(level, message, ...args) {
@@ -22,13 +25,18 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     "https://31f0-102-88-84-32.ngrok-free.app",
-    "http://localhost:3000",
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://ableez.vercel.app",
   ],
   plugins: [
     passkey({
       rpID: "localhost",
       rpName: "Asterisk",
-      origin: "http://localhost:3000",
+      origin:
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:3000"
+          : "https://ableez.vercel.app",
     }),
     phoneNumber({
       sendOTP: ({ phoneNumber, code }, request) => {

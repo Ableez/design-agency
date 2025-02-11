@@ -121,9 +121,9 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
             Get OTP
           </Button> */}
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-neutral-200 dark:after:border-neutral-700">
-            <span className="relative z-10 bg-neutral-100 px-2 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
+            {/* <span className="relative z-10 bg-neutral-100 px-2 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
               Or continue with
-            </span>
+            </span> */}
           </div>
           <div className="flex flex-col gap-2">
             {/* <Button
