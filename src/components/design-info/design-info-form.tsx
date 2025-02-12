@@ -5,9 +5,13 @@ import { useCallback, useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { UploadedImagesCarousel } from "./uploaded-images-carousel";
-import { toast } from "sonner";
 import { createSocialMediaDesignJob } from "#/server/actions/create-social-media-design-job";
-import type { SocialFormState } from "#/app/social-media-design/page";
+import { toast } from "sonner";
+import { ClientUploadedFileData } from "uploadthing/types";
+import { SocialFormState } from "../social-media-designs/data";
+import { DesignJobData } from "#/types/jobs";
+import MiniAuthDrawer from "../auth/mini-auth-drawer";
+import { useUser } from "@clerk/nextjs";
 
 type ImageData = {
   url: string;
@@ -19,10 +23,12 @@ type ImageData = {
 
 const DesignInfoForm: React.FC<{
   jobId: string;
-  socialMediaDesignJobInfo: SocialFormState;
-}> = ({ jobId, socialMediaDesignJobInfo }) => {
+  jobInfo: DesignJobData;
+}> = ({ jobId, jobInfo }) => {
   const localStorageDescriptionKey = `designInfoDescription-${jobId}`;
   const localStorageImagesKey = `designInfoImages-${jobId}`;
+  const [openAuthDrawer, setOpenAuthDrawer] = useState(false);
+  const { user, isSignedIn } = useUser();
 
   const [description, setDescription] = useState<string>(() => {
     if (typeof window !== "undefined") {
@@ -68,12 +74,26 @@ const DesignInfoForm: React.FC<{
       previewUrl: URL.createObjectURL(file),
     }));
 
+    console.log("newImages", newImages);
+
     setImages((prevImages) => [...prevImages, ...newImages]);
     return newImages;
   }, []);
 
   const handleUploadComplete = useCallback(
-    (fileUrls: Record<string, string> | undefined) => {
+    (
+      res: ClientUploadedFileData<{
+        uploadedBy: string;
+      }>[],
+    ) => {
+      const fileUrls = res.reduce(
+        (acc, file) => {
+          acc[file.name] = file.url;
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
+
       if (fileUrls) {
         setImages((prevImages) =>
           prevImages.map((image) => {
@@ -88,28 +108,40 @@ const DesignInfoForm: React.FC<{
           }),
         );
       }
+
+      toast("Upload complete");
     },
     [],
   );
 
   const handleRemoveImage = useCallback((imageUrl: string) => {
-    setImages((prevImages) => prevImages.filter((img) => img.url !== imageUrl));
+    setImages((prevImages) =>
+      prevImages.filter(
+        (img) => img.url !== imageUrl || img.previewUrl !== imageUrl,
+      ),
+    );
   }, []);
 
   const handleSubmit = useCallback(async () => {
     console.log("images", images);
     console.log({ description, images });
 
+    if (!isSignedIn) {
+      toast("Just one last time, I promise.");
+      setOpenAuthDrawer(true);
+      return;
+    }
+
     // call the server action you created here
     await createSocialMediaDesignJob({
-      size: socialMediaDesignJobInfo.size ?? "",
-      purpose: socialMediaDesignJobInfo.purpose ?? "",
-      platform: socialMediaDesignJobInfo.platform ?? "",
-      deliverySpeed: socialMediaDesignJobInfo.deliverySpeed ?? "",
-      username: socialMediaDesignJobInfo.userInfo.username,
-      email: socialMediaDesignJobInfo.userInfo.email,
-      phone: socialMediaDesignJobInfo.userInfo.phone,
-      brand: socialMediaDesignJobInfo.userInfo.brand,
+      size: jobInfo.size ?? "",
+      purpose: jobInfo.purpose ?? "",
+      platform: jobInfo.platform ?? "",
+      deliverySpeed: jobInfo.deliverySpeed ?? "",
+      username: jobInfo.userInfo.username,
+      email: jobInfo.userInfo.email,
+      phone: jobInfo.userInfo.phone,
+      brand: jobInfo.userInfo.brand,
       designDescription: description,
       referenceImages: images.map((img) => img.url),
       jobId: jobId,
@@ -119,15 +151,16 @@ const DesignInfoForm: React.FC<{
   }, [
     description,
     images,
+    isSignedIn,
     jobId,
-    socialMediaDesignJobInfo.deliverySpeed,
-    socialMediaDesignJobInfo.platform,
-    socialMediaDesignJobInfo.purpose,
-    socialMediaDesignJobInfo.size,
-    socialMediaDesignJobInfo.userInfo.brand,
-    socialMediaDesignJobInfo.userInfo.email,
-    socialMediaDesignJobInfo.userInfo.phone,
-    socialMediaDesignJobInfo.userInfo.username,
+    jobInfo.deliverySpeed,
+    jobInfo.platform,
+    jobInfo.purpose,
+    jobInfo.size,
+    jobInfo.userInfo.brand,
+    jobInfo.userInfo.email,
+    jobInfo.userInfo.phone,
+    jobInfo.userInfo.username,
   ]);
 
   return (
@@ -142,24 +175,10 @@ const DesignInfoForm: React.FC<{
               endpoint="imageUploader"
               onBeforeUploadBegin={(files) => {
                 handleBeforeUploadBegin(files);
+                toast("Uploading...");
                 return files;
               }}
-              onUploadProgress={(n: number) => {
-                toast(`Uploading ${n.toFixed(0)}%`, {
-                  dismissible: n < 1,
-                  duration: n < 1 ? 99999999999 : undefined,
-                });
-              }}
-              onClientUploadComplete={(res) => {
-                const recs = res.reduce(
-                  (acc, file) => {
-                    acc[file.name] = file.url;
-                    return acc;
-                  },
-                  {} as Record<string, string>,
-                );
-                handleUploadComplete(recs);
-              }}
+              onClientUploadComplete={handleUploadComplete}
               config={{
                 mode: "auto",
               }}
@@ -171,6 +190,7 @@ const DesignInfoForm: React.FC<{
               images={images.map((img) => img.previewUrl ?? img.url)}
             />
           )}
+
           {images.length > 0 && images.length < 5 && (
             <UploadButton
               endpoint="imageUploader"
@@ -178,23 +198,7 @@ const DesignInfoForm: React.FC<{
                 handleBeforeUploadBegin(files);
                 return files;
               }}
-              onUploadProgress={(n: number) => {
-                toast(`Uploading ${n.toFixed(0)}%`, {
-                  dismissible: n < 1,
-                  duration: n < 1 ? 0 : undefined,
-                  id: "image-upload-progress",
-                });
-              }}
-              onClientUploadComplete={(res) => {
-                const recs = res.reduce(
-                  (acc, file) => {
-                    acc[file.name] = file.url;
-                    return acc;
-                  },
-                  {} as Record<string, string>,
-                );
-                handleUploadComplete(recs);
-              }}
+              onClientUploadComplete={handleUploadComplete}
               config={{
                 mode: "auto",
               }}
@@ -215,6 +219,10 @@ const DesignInfoForm: React.FC<{
           Continue
         </Button>
       </form>
+      <MiniAuthDrawer
+        open={openAuthDrawer}
+        onOpenChange={(b) => setOpenAuthDrawer(b)}
+      />
     </div>
   );
 };

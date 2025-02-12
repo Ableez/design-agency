@@ -13,12 +13,12 @@ import {
   IconBriefcase,
   IconColorSwatch,
   IconDiamondFilled,
+  IconLogin2,
   IconLogout2,
   IconMenu,
   IconWallet,
 } from "@tabler/icons-react";
 import { Button } from "./ui/button";
-import { authClient } from "#/lib/auth-client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,6 +30,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignOutButton,
+} from "@clerk/nextjs";
 
 const MobileSheet = () => {
   const [open, setOpen] = useState(false);
@@ -80,43 +86,56 @@ const MobileSheet = () => {
           </div>
 
           <div className="mt-8">
-            <SheetClose asChild>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className="w-full justify-center py-5"
-                  >
-                    <IconLogout2 color={"#eb0000"} />
-                    <h4 className="text-red-600">Sign out</h4>
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      You will be signed out of your account.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </AlertDialogCancel>
-                    <AlertDialogAction asChild>
-                      <Button
-                        variant="destructive"
-                        onClick={async () => {
-                          const data = await authClient.signOut();
-                          console.log(data.data);
-                        }}
-                      >
-                        Sign out
-                      </Button>
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </SheetClose>
+            <SignedOut>
+              <SignInButton>
+                <Button
+                  variant={"outline"}
+                  className="w-full justify-center py-5"
+                >
+                  <IconLogin2 color={"#008aff"} />
+                  <h4 className="text-blue-600">Sign in</h4>
+                </Button>
+              </SignInButton>
+            </SignedOut>
+
+            <SignedIn>
+              <SheetClose asChild>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className="w-full justify-center py-5"
+                    >
+                      <IconLogout2 color={"#eb0000"} />
+                      <h4 className="text-red-600">Sign out</h4>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        You will be signed out of your account.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </AlertDialogCancel>
+                      <AlertDialogAction asChild>
+                        <SignOutButton>
+                          <Button
+                            variant="destructive"
+                            onClick={async () => {}}
+                          >
+                            Sign out
+                          </Button>
+                        </SignOutButton>
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </SheetClose>
+            </SignedIn>
           </div>
         </SheetContent>
       </Sheet>

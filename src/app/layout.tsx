@@ -2,10 +2,14 @@ import "#/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 
 import { TRPCReactProvider } from "#/trpc/react";
 import { ThemeProvider } from "#/components/theme-provider";
 import { Toaster } from "#/components/ui/sonner";
+import { Toaster as ToastToaster } from "#/components/ui/toaster";
+import { dark } from "@clerk/themes";
+import { useTheme } from "next-themes";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -17,21 +21,25 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${GeistSans.variable}`}
-      suppressHydrationWarning
-    >
-      <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-        >
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-          <Toaster position="top-center" />
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider appearance={{ baseTheme: dark }}>
+      <html
+        lang="en"
+        className={`${GeistSans.variable}`}
+        suppressHydrationWarning
+        suppressContentEditableWarning
+      >
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem={false}
+          >
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+            <Toaster position="top-center" />
+            <ToastToaster />
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

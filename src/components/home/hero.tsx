@@ -1,11 +1,11 @@
-import { auth } from "#/lib/auth";
 import { headers } from "next/headers";
 import Services from "./services";
 import { Spotlight } from "./spotlight-bg";
 import Link from "next/link";
+import { currentUser } from "@clerk/nextjs/server";
 
 export default async function HomeHero() {
-  const user = await auth.api.getSession({ headers: await headers() });
+  const user = await currentUser();
 
   return (
     <div className="bg-grid-white/[0.02] relative flex w-full flex-col overflow-hidden bg-black/[0.96] py-10 antialiased md:items-center md:justify-center">
@@ -17,7 +17,7 @@ export default async function HomeHero() {
             className="transition-all duration-150 ease-in-out hover:scale-[0.95]"
             href={user ? "/profile" : "/sign-in"}
           >
-            {user?.user?.name.split(" ")[0] ?? "User"}!
+            {user?.username ?? "User"}!
           </Link>
         </h4>
         <h4 className="dark:text-neutral-400">How can we help you today?</h4>

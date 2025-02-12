@@ -1,11 +1,10 @@
 "use server";
 
-import { auth } from "#/lib/auth";
-import { headers } from "next/headers";
 import { db } from "../db";
 import { designJob } from "../db/schema";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { currentUser } from "@clerk/nextjs/server";
 
 export type SocialMediaDesignJobInput = {
   size: string;
@@ -28,15 +27,15 @@ export const createSocialMediaDesignJob = async (
   input: SocialMediaDesignJobInput,
 ) => {
   console.log("IN THE SERVER ", input);
-  const user = await auth.api.getSession({ headers: await headers() });
+  const user = await currentUser();
 
   const created = await db
     .insert(designJob)
     .values({
-      email: (user?.user?.email ?? input.email) ?? undefined,
-      phone: (user?.user?.phoneNumber ?? input.phone) ?? undefined,
+      email: user?.emailAddresses[0]?.emailAddress ?? input.email ?? undefined,
+      phone: user?.phoneNumbers[0]?.phoneNumber ?? input.phone ?? undefined,
       brand: input.brand ?? undefined,
-      username: (user?.user?.name ?? input.username) ?? undefined,
+      username: user?.username ?? input.username ?? undefined,
       deliverySpeed: input.deliverySpeed ?? undefined,
       designDescription: input.designDescription ?? null,
       referenceImages: input.referenceImages ?? null,

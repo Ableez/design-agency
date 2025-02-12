@@ -11,7 +11,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "#/server/db";
-import { authClient } from "#/lib/auth-client";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 /**
  * 1. CONTEXT
@@ -26,11 +26,11 @@ import { authClient } from "#/lib/auth-client";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const sess = await authClient.getSession();
-  console.log("sess", sess);
+  const user = await currentUser();
+
   return {
     db,
-    userId: sess.data?.session.userId,
+    user: user,
     ...opts,
   };
 };
@@ -101,7 +101,7 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 });
 
 const authMiddleware = t.middleware(async ({ ctx, next }) => {
-  if (ctx.userId) {
+  if (ctx.user) {
     return next();
   }
 

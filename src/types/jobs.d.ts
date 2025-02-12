@@ -1,4 +1,4 @@
-export interface JobData {
+export type DesignJobData = {
   jobId: string;
   timestamp: string;
   service: string;
@@ -11,11 +11,9 @@ export interface JobData {
     phone: string;
     brand: string;
   };
-}
+} & SocialFormState;
 
-
-
-export type DesignOrderType = { 
+export type DesignOrderType = {
   id: string;
   size: string;
   purpose: string;

@@ -1,8 +1,8 @@
 import React from "react";
 import { IconAsterisk } from "@tabler/icons-react";
-import UserButton from "./user-button";
 import Link from "next/link";
 import MobileSheet from "./mobile-sheet";
+import { UserButton } from "@clerk/nextjs";
 
 const Header = () => {
   return (
@@ -15,7 +15,9 @@ const Header = () => {
         <IconAsterisk strokeWidth={4} color={"#fff"} size={38} />
         <h4 className="hidden text-lg font-semibold md:block">Asterisk</h4>
       </Link>
-      <UserButton />
+      <div  className="justify-self-end">
+        <UserButton />
+      </div>
     </div>
   );
 };

@@ -1,45 +1,47 @@
-import type { SocialFormState } from "#/app/social-media-design/page";
+"use client";
 import DesignInfoForm from "#/components/design-info/design-info-form";
+import { SocialFormState } from "#/components/social-media-designs/data";
 import { Button } from "#/components/ui/button";
 import { Card, CardContent, CardHeader } from "#/components/ui/card";
-import type { JobData } from "#/types/jobs";
+import type { DesignJobData } from "#/types/jobs";
 import { IconInfoCircleFilled, IconX } from "@tabler/icons-react";
-import { cookies } from "next/headers";
 import Link from "next/link";
+import { use } from "react";
 
 interface Props {
   params: Promise<{ jobId: string }>;
 }
 
-const DesignInfo = async ({ params }: Props) => {
-  const { jobId } = await params;
-  const jobsCookie = (await cookies()).get("jobs")?.value;
-  const jobFormState = JSON.parse(jobsCookie ?? "{}") as JobData[];
+const DesignInfo = ({ params }: Props) => {
+  const { jobId } = use(params);
+  const jobsCookie = sessionStorage.getItem(jobId);
+  const jobFormState = JSON.parse(jobsCookie ?? "{}") as DesignJobData;
+
+  console.log("JOBSCOOKIES", jobsCookie);
 
   if (!jobsCookie) {
     return <ErrorMessage />;
   }
 
   try {
-    const jobInfo = jobFormState.find((job) => job.jobId === jobId);
-    const socialMediaDesignJobInfo = jobInfo as SocialFormState;
-
-    if (!jobInfo) {
-      return <ErrorMessage />;
-    }
+    const jobInfo = jobFormState as DesignJobData;
 
     return (
       <div className="container mx-auto max-w-2xl bg-white dark:bg-black">
         <header className="sticky top-0 mb-4 flex items-center justify-between bg-black/60 px-4 py-4 backdrop-blur-xl">
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-10 w-10"
-              aria-label="Close"
+            <Link
+              href={`/${jobInfo.service.toLocaleLowerCase().replaceAll(" ", "-")}`}
             >
-              <IconX className="h-6 w-6 text-blue-500" strokeWidth={3} />
-            </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-10 w-10"
+                aria-label="Close"
+              >
+                <IconX className="h-6 w-6 text-blue-500" strokeWidth={3} />
+              </Button>
+            </Link>
             <h1 className="text-xl font-semibold">Your order</h1>
           </div>
 
@@ -62,14 +64,13 @@ const DesignInfo = async ({ params }: Props) => {
             <div className="grid gap-2 rounded-lg bg-neutral-900 p-4">
               <div className="font-medium">{jobInfo.service}</div>
               <div className="text-sm lowercase text-neutral-400 first-letter:capitalize">
-                {socialMediaDesignJobInfo.purpose} for{" "}
-                {socialMediaDesignJobInfo.size}
+                {jobInfo.purpose} for {jobInfo.size}
               </div>
               <div className="text-sm text-neutral-400">
-                Platform: {socialMediaDesignJobInfo.platform}
+                Platform: {jobInfo.platform}
               </div>
               <div className="text-sm text-neutral-400">
-                Delivery: {socialMediaDesignJobInfo.deliverySpeed}
+                Delivery: {jobInfo.deliveryOption}
               </div>
             </div>
           </CardContent>
@@ -86,10 +87,7 @@ const DesignInfo = async ({ params }: Props) => {
                   to your needs.
                 </p>
               </div>
-              <DesignInfoForm
-                socialMediaDesignJobInfo={socialMediaDesignJobInfo}
-                jobId={jobId}
-              />
+              <DesignInfoForm jobInfo={jobInfo} jobId={jobId} />
             </CardContent>
           </Card>
         </section>
