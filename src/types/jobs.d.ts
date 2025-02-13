@@ -1,3 +1,5 @@
+import { SocialFormState } from "#/components/social-media-designs/data";
+
 export type DesignJobData = {
   jobId: string;
   timestamp: string;

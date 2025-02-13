@@ -1,21 +1,21 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  deliveryOptions,
+  designDeliveryOptions,
+  designSizeOptions,
+  DesignSizeType,
   instagramDesignSizeOptions,
   platformOptions,
   purposeOptions,
   SocialFormState,
-  websiteDesignSizeOptions,
 } from "./data";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { useCookies } from "react-cookie";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { v4 } from "uuid";
 import { DesignJobData } from "#/types/jobs";
-import DeliveryOptionPicker from "../delivery-option-picker";
+import DeliveryOptionPicker from "../design-delivery-option-picker";
 import DesignSizeOptionPicker from "../design-size-option-picker";
 
 type Props = {};
@@ -25,16 +25,9 @@ const SocialMediaDesignOptions = (props: Props) => {
   const [isClient, setIsClient] = useState(false);
   const [socialFormState, setSocialFormState] =
     useState<SocialFormState | null>(null);
-
-  // find a designsize option that fits the platform thats all
-  const [designSizeOptions, setDesignSizeOptions] = useState(
-    socialFormState?.platform === "instagram"
-      ? instagramDesignSizeOptions
-      : socialFormState?.platform === "website"
-        ? websiteDesignSizeOptions
-        : // default to instagram
-          instagramDesignSizeOptions,
-  );
+  const [currSizeOptions, setCurrSizeOptions] = useState<
+    DesignSizeType[] | null
+  >(null);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -73,12 +66,29 @@ const SocialMediaDesignOptions = (props: Props) => {
     [],
   );
 
+  const handleSetSizeOption = useCallback(
+    (platform: keyof typeof designSizeOptions) => {
+      const size = designSizeOptions[platform];
+      if (size) {
+        setCurrSizeOptions(size);
+      }
+    },
+    [],
+  );
+
   const isFormComplete = !!(
     socialFormState?.size &&
     socialFormState?.purpose &&
     socialFormState?.platform &&
-    socialFormState?.deliveryOption
+    socialFormState?.designDeliveryOption
   );
+
+  console.log("CHECKUP", {
+    size: !!socialFormState?.size,
+    purpose: !!socialFormState?.purpose,
+    platform: !!socialFormState?.platform,
+    designDeliveryOption: !!socialFormState?.designDeliveryOption,
+  });
 
   const handleContinue = useCallback(async () => {
     if (!isFormComplete) {
@@ -114,7 +124,7 @@ const SocialMediaDesignOptions = (props: Props) => {
 
   return (
     <div>
-      <div className="relative flex min-h-[100dvh] w-full flex-col gap-6 rounded-t-2xl bg-white p-6 pb-20 shadow-2xl dark:bg-black">
+      <div className="relative flex min-h-[100dvh] w-full flex-col gap-6 rounded-t-2xl bg-white p-4 py-2 pb-20 shadow-2xl dark:bg-black">
         <div className="flex flex-col gap-2">
           <h4 className="pl-2 text-xs font-medium dark:text-neutral-600">
             Platform
@@ -128,17 +138,22 @@ const SocialMediaDesignOptions = (props: Props) => {
                     ? "ring-4 ring-blue-500 dark:hover:ring-blue-500"
                     : "ring-transparent"
                 } dark:bg-neutral-900 dark:hover:ring-blue-600/40`}
-                onClick={() => handleSelect("platform", option.id)}
+                onClick={() => {
+                  handleSelect("platform", option.id);
+                  handleSetSizeOption(option.id);
+                }}
               >
                 {/* {option.icon} */}
-                <h4>{option.title}</h4>
+                <h4 className="text-center text-xs font-semibold md:text-sm">
+                  {option.title}
+                </h4>
               </button>
             ))}
           </div>
         </div>
 
         <DesignSizeOptionPicker
-          designSizeOptions={designSizeOptions}
+          designSizeOptions={currSizeOptions ?? instagramDesignSizeOptions}
           label="Pick a size"
           selectedOption={socialFormState?.size ?? null}
           onSelect={(s) =>
@@ -147,7 +162,7 @@ const SocialMediaDesignOptions = (props: Props) => {
         />
         <div className="flex flex-col gap-2">
           <h4 className="pl-2 text-xs font-medium dark:text-neutral-600">
-            Purpose
+            Use case
           </h4>
           <div className="grid grid-cols-2 gap-4">
             {purposeOptions.map((option) => (
@@ -167,23 +182,23 @@ const SocialMediaDesignOptions = (props: Props) => {
                   className="aspect-square w-full rounded-xl object-cover"
                   height={120}
                 />
-                <h4>{option.title}</h4>
+                <h4 className="text-xs md:text-sm">{option.title}</h4>
               </button>
             ))}
           </div>
         </div>
 
         <DeliveryOptionPicker
-          deliveryOptions={deliveryOptions}
-          selectedOption={socialFormState?.deliveryOption ?? null}
+          designDeliveryOptions={designDeliveryOptions}
+          selectedOption={socialFormState?.designDeliveryOption ?? null}
           onSelect={(s) =>
             setSocialFormState(
-              (p) => ({ ...p, deliveryOption: s }) as SocialFormState,
+              (p) => ({ ...p, designDeliveryOption: s }) as SocialFormState,
             )
           }
         />
       </div>
-      <div className="fixed bottom-0 left-0 z-50 w-full bg-gradient-to-t from-black to-transparent px-8 py-4">
+      <div className="fixed bottom-0 left-0 z-50 w-full bg-gradient-to-t from-black to-transparent px-4 py-6">
         <Button
           onClick={async () => {
             await handleContinue();

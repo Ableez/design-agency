@@ -70,6 +70,7 @@ export async function POST(req: Request) {
     });
   }
 
+  console.log("webhook event", evt);
   function handler(webhook: WebhookUntransformedEvt): {
     data: {
       id: string;

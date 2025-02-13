@@ -1,6 +1,6 @@
 {
-  "id": "6dacca8f-d7c9-4e79-b666-1fda2dfcae3f",
-  "prevId": "9f6db8a7-03cb-4d4e-ba68-d17290d163f9",
+  "id": "420ffcbf-9573-4211-9139-52fec99cf7d9",
+  "prevId": "1699ac30-9d7f-4f43-b7f9-e0c9d0602caa",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -19,13 +19,25 @@
           "name": "name",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "owner": {
           "name": "owner",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "industry": {
+          "name": "industry",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "logo": {
           "name": "logo",
@@ -74,6 +86,50 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.asterisk_design_delivery_option": {
+      "name": "asterisk_design_delivery_option",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "duration": {
+          "name": "duration",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "icon": {
+          "name": "icon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.asterisk_design_job": {
       "name": "asterisk_design_job",
       "schema": "",
@@ -85,9 +141,15 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "size": {
-          "name": "size",
+        "platform": {
+          "name": "platform",
           "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "size_id": {
+          "name": "size_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
@@ -97,15 +159,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "platform": {
-          "name": "platform",
+        "service": {
+          "name": "service",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
         },
-        "delivery_speed": {
-          "name": "delivery_speed",
-          "type": "varchar(256)",
+        "design_delivery_option": {
+          "name": "design_delivery_option",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
@@ -113,7 +175,7 @@
           "name": "job_id",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "timestamp": {
           "name": "timestamp",
@@ -122,27 +184,21 @@
           "notNull": true,
           "default": "CURRENT_TIMESTAMP"
         },
-        "service": {
-          "name": "service",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "design_description": {
           "name": "design_description",
-          "type": "varchar(256)",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
         "reference_images": {
           "name": "reference_images",
-          "type": "text",
+          "type": "varchar[]",
           "primaryKey": false,
           "notNull": false
         },
         "design_files": {
           "name": "design_files",
-          "type": "varchar(256)",
+          "type": "varchar[]",
           "primaryKey": false,
           "notNull": false
         },
@@ -164,8 +220,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "brand": {
-          "name": "brand",
+        "brand_id": {
+          "name": "brand_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
@@ -179,12 +235,38 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "asterisk_design_job_brand_asterisk_brand_id_fk": {
-          "name": "asterisk_design_job_brand_asterisk_brand_id_fk",
+        "asterisk_design_job_size_id_asterisk_design_size_id_fk": {
+          "name": "asterisk_design_job_size_id_asterisk_design_size_id_fk",
+          "tableFrom": "asterisk_design_job",
+          "tableTo": "asterisk_design_size",
+          "columnsFrom": [
+            "size_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "asterisk_design_job_design_delivery_option_asterisk_design_delivery_option_id_fk": {
+          "name": "asterisk_design_job_design_delivery_option_asterisk_design_delivery_option_id_fk",
+          "tableFrom": "asterisk_design_job",
+          "tableTo": "asterisk_design_delivery_option",
+          "columnsFrom": [
+            "design_delivery_option"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "asterisk_design_job_brand_id_asterisk_brand_id_fk": {
+          "name": "asterisk_design_job_brand_id_asterisk_brand_id_fk",
           "tableFrom": "asterisk_design_job",
           "tableTo": "asterisk_brand",
           "columnsFrom": [
-            "brand"
+            "brand_id"
           ],
           "columnsTo": [
             "id"
@@ -206,6 +288,62 @@
           "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.asterisk_design_size": {
+      "name": "asterisk_design_size",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aspect_ratio": {
+          "name": "aspect_ratio",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dimensions": {
+          "name": "dimensions",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unit": {
+          "name": "unit",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image": {
+          "name": "image",
+          "type": "varchar(512)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},

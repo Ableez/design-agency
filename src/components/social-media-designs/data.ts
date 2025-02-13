@@ -18,23 +18,27 @@ export type SelectableOption = {
   aspectRatio?: string;
 };
 
-export interface SocialFormState extends DesignJobData {
-  size: string | null;
+export type DesignPlatformType =
+  | "instagram"
+  | "tiktok"
+  | "twitter"
+  | "facebook"
+  | "snapchat"
+  | "youtube"
+  | "website"
+  | "other";
+
+export interface SocialFormState {
+  size: DesignSizeType | null;
   purpose: string | null;
-  platform:
-    | "instagram"
-    | "tiktok"
-    | "twitter"
-    | "facebook"
-    | "snapchat"
-    | "youtube"
-    | "website"
-    | "other";
-  deliveryOption: string | null;
+  platform: DesignPlatformType;
+  designDeliveryOption: DesignDeliveryOptionType | null;
+  sizeOptions: DesignSizeType[];
 }
 
 export type DesignSizeType = {
   id: string;
+  slug: string;
   title: string;
   dimensions?: string;
   description?: string;
@@ -46,73 +50,90 @@ export type DesignSizeType = {
 
 export const instagramDesignSizeOptions: DesignSizeType[] = [
   {
-    id: "portrait:1",
+    id: "d1ef0686-094f-4452-8fd9-ce50d25aaba2",
     title: "Portrait",
     aspectRatio: "4:5",
     dimensions: "1080x1350",
     unit: "PX",
     image:
       "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2ewNpv49xTYo2ezVpkbt37nPSHJ9vDQUrijamM",
+    slug: "portrait4:5",
   },
-
   {
-    id: "stories&reels:1",
-    title: "Stories & Reels",
+    id: "2b723175-cb97-4b5e-ab1f-0734aadddad6",
+    title: "Reels",
     aspectRatio: "9:16",
     dimensions: "1080x1920",
     unit: "PX",
     image:
       "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eoCNUZdxhPFXtGYs41w5Dm8TZAyqceuRl63Sb",
+    slug: "stories&reels:1",
   },
   {
-    id: "square:1",
+    id: "5698633e-63a5-4dae-8cf6-dfa4ab7316d4",
     title: "Square",
     aspectRatio: "1:1",
     dimensions: "1080x1080",
     unit: "PX",
     image:
       "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2e457aSZHLgFXJ2No57qBDKUdsS0T8mcVYIhlk",
+    slug: "square:1",
   },
   {
-    id: "landscape:1",
+    id: "93498f2a-cbc1-4b9c-9804-5c790a43f6fe",
     title: "Landscape",
     aspectRatio: "16:9",
     dimensions: "1080x566",
     unit: "PX",
     image:
       "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eGTLWo3lZo0getUmzP423WENbpVMDfhBAlRiF",
+    slug: "landscape:1",
   },
 ];
 
 export const websiteDesignSizeOptions: DesignSizeType[] = [
   {
-    id: "portrait_website",
+    id: "387b6cc6-9105-4188-8c08-3bbdca7ef719",
     title: "Portrait",
     aspectRatio: "1:1",
     dimensions: "1080x566",
     unit: "PX",
     image:
       "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eVId9wEenR487aEVXgQZGtMIvj5oHNueC0scJ",
+    slug: "portrait_website",
   },
   {
-    id: "mobile_fullscreen_website",
+    id: "f636d380-3028-4e6b-8485-af7278b0e644",
     title: "Mobile Fullscreen",
     aspectRatio: "9:16",
     dimensions: "1920x1080",
     unit: "PX",
     image:
-      "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eGTLWo3lZo0getUmzP423WENbpVMDfhBAlRiF",
+      "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eo7cpqMhPFXtGYs41w5Dm8TZAyqceuRl63SbW",
+    slug: "mobile_fullscreen_website",
   },
   {
-    id: " desktop_banner_website",
+    id: "65a6f26a-4dcc-4c02-af99-2258ac248db6",
     title: "Website Banner",
     aspectRatio: "16:9",
     dimensions: "1080x1920",
     unit: "PX",
     image:
       "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2ercP16I3WQNCq9K2htlySGifT3MoLaePkYAcB",
+    slug: "desktop_banner_website",
   },
 ];
+
+export const designSizeOptions = {
+  instagram: instagramDesignSizeOptions,
+  tiktok: websiteDesignSizeOptions,
+  twitter: instagramDesignSizeOptions,
+  facebook: instagramDesignSizeOptions,
+  snapchat: instagramDesignSizeOptions,
+  youtube: instagramDesignSizeOptions,
+  website: websiteDesignSizeOptions,
+  other: instagramDesignSizeOptions,
+};
 
 export const purposeOptions: SelectableOption[] = [
   {
@@ -138,11 +159,10 @@ export const purposeOptions: SelectableOption[] = [
 ];
 
 export type PlatformType = {
-  id: string;
+  id: DesignPlatformType;
   title: string;
   icon?: ReactNode;
   featured?: boolean;
-  sizeOptions: DesignSizeType[];
 };
 
 export const platformOptions: PlatformType[] = [
@@ -150,41 +170,35 @@ export const platformOptions: PlatformType[] = [
     id: "instagram",
     title: "Instagram",
     icon: IconBrandInstagramFilled as unknown as ReactNode,
-    sizeOptions: instagramDesignSizeOptions,
   },
-  // {
-  //   id: "website",
-  //   title: "My Website",
-  //   icon: IconBrandSnapchatFilled as unknown as ReactNode,
-  //   sizeOptions: instagramDesignSizeOptions,
-  // },
+  {
+    id: "website",
+    title: "My Website",
+    icon: IconBrandSnapchatFilled as unknown as ReactNode,
+  },
   // {
   //   id: "facebook",
   //   title: "Facebook",
   //   icon: IconBrandFacebookFilled as unknown as ReactNode,
-  //   sizeOptions: instagramDesignSizeOptions,
   // },
-  // {
-  //   id: "tiktok",
-  //   title: "TikTok",
-  //   icon: IconBrandTiktokFilled as unknown as ReactNode,
-  //   sizeOptions: instagramDesignSizeOptions,
-  // },
+  {
+    id: "tiktok",
+    title: "TikTok",
+    icon: IconBrandTiktokFilled as unknown as ReactNode,
+  },
   // {
   //   id: "youtube",
   //   title: "YouTube",
   //   icon: IconBrandSnapchatFilled as unknown as ReactNode,
-  //   sizeOptions: instagramDesignSizeOptions,
   // },
-  // {
-  //   id: "others",
-  //   title: "Others",
-  //   icon: IconBrandSnapchatFilled as unknown as ReactNode,
-  //   sizeOptions: instagramDesignSizeOptions,
-  // },
+  {
+    id: "other",
+    title: "Others",
+    icon: IconBrandSnapchatFilled as unknown as ReactNode,
+  },
 ];
 
-export type DeliveryOptionType = {
+export type DesignDeliveryOptionType = {
   id: string;
   title: string;
   duration: string;
@@ -195,7 +209,7 @@ export type DeliveryOptionType = {
   featured?: boolean;
 };
 
-export const deliveryOptions: DeliveryOptionType[] = [
+export const designDeliveryOptions: DesignDeliveryOptionType[] = [
   {
     title: "Standard",
     description: "Regular delivery timeline",
