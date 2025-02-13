@@ -45,7 +45,7 @@ export const createSocialMediaDesignJob = async (
       purpose: input.purpose ?? null,
       service: input.service ?? null,
       size: input.size ?? null,
-      timestamp: new Date(input.timestamp) ?? null,
+      timestamp: new Date(input.timestamp),
     })
     .returning();
 
