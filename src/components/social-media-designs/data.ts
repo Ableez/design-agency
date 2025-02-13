@@ -21,7 +21,15 @@ export type SelectableOption = {
 export interface SocialFormState extends DesignJobData {
   size: string | null;
   purpose: string | null;
-  platform: string | null;
+  platform:
+    | "instagram"
+    | "tiktok"
+    | "twitter"
+    | "facebook"
+    | "snapchat"
+    | "youtube"
+    | "website"
+    | "other";
   deliveryOption: string | null;
 }
 
@@ -33,13 +41,77 @@ export type DesignSizeType = {
   aspectRatio: "1:1" | "9:16" | "4:5" | "16:9";
   unit?: "PX" | "MM" | "CM" | "IN";
   icon?: ReactNode;
+  image?: string;
 };
 
-export const designSizeOptions: DesignSizeType[] = [
-  { id: "feeds:1", title: "IG Feeds", aspectRatio: "4:5" },
-  { id: "square_1:1", title: "Square", aspectRatio: "1:1" },
-  { id: "reels:1", title: "Reels", aspectRatio: "9:16" },
-  { id: "video:1", title: "Video", aspectRatio: "16:9" },
+export const instagramDesignSizeOptions: DesignSizeType[] = [
+  {
+    id: "portrait:1",
+    title: "Portrait",
+    aspectRatio: "4:5",
+    dimensions: "1080x1350",
+    unit: "PX",
+    image:
+      "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2ewNpv49xTYo2ezVpkbt37nPSHJ9vDQUrijamM",
+  },
+
+  {
+    id: "stories&reels:1",
+    title: "Stories & Reels",
+    aspectRatio: "9:16",
+    dimensions: "1080x1920",
+    unit: "PX",
+    image:
+      "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eoCNUZdxhPFXtGYs41w5Dm8TZAyqceuRl63Sb",
+  },
+  {
+    id: "square:1",
+    title: "Square",
+    aspectRatio: "1:1",
+    dimensions: "1080x1080",
+    unit: "PX",
+    image:
+      "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2e457aSZHLgFXJ2No57qBDKUdsS0T8mcVYIhlk",
+  },
+  {
+    id: "landscape:1",
+    title: "Landscape",
+    aspectRatio: "16:9",
+    dimensions: "1080x566",
+    unit: "PX",
+    image:
+      "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eGTLWo3lZo0getUmzP423WENbpVMDfhBAlRiF",
+  },
+];
+
+export const websiteDesignSizeOptions: DesignSizeType[] = [
+  {
+    id: "portrait_website",
+    title: "Portrait",
+    aspectRatio: "1:1",
+    dimensions: "1080x566",
+    unit: "PX",
+    image:
+      "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eVId9wEenR487aEVXgQZGtMIvj5oHNueC0scJ",
+  },
+  {
+    id: "mobile_fullscreen_website",
+    title: "Mobile Fullscreen",
+    aspectRatio: "9:16",
+    dimensions: "1920x1080",
+    unit: "PX",
+    image:
+      "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eGTLWo3lZo0getUmzP423WENbpVMDfhBAlRiF",
+  },
+  {
+    id: " desktop_banner_website",
+    title: "Website Banner",
+    aspectRatio: "16:9",
+    dimensions: "1080x1920",
+    unit: "PX",
+    image:
+      "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2ercP16I3WQNCq9K2htlySGifT3MoLaePkYAcB",
+  },
 ];
 
 export const purposeOptions: SelectableOption[] = [
@@ -65,23 +137,51 @@ export const purposeOptions: SelectableOption[] = [
   },
 ];
 
-export const platformOptions: SelectableOption[] = [
+export type PlatformType = {
+  id: string;
+  title: string;
+  icon?: ReactNode;
+  featured?: boolean;
+  sizeOptions: DesignSizeType[];
+};
+
+export const platformOptions: PlatformType[] = [
   {
+    id: "instagram",
     title: "Instagram",
     icon: IconBrandInstagramFilled as unknown as ReactNode,
+    sizeOptions: instagramDesignSizeOptions,
   },
-  {
-    title: "Facebook",
-    icon: IconBrandFacebookFilled as unknown as ReactNode,
-  },
-  {
-    title: "TikTok",
-    icon: IconBrandTiktokFilled as unknown as ReactNode,
-  },
-  {
-    title: "Snapchat",
-    icon: IconBrandSnapchatFilled as unknown as ReactNode,
-  },
+  // {
+  //   id: "website",
+  //   title: "My Website",
+  //   icon: IconBrandSnapchatFilled as unknown as ReactNode,
+  //   sizeOptions: instagramDesignSizeOptions,
+  // },
+  // {
+  //   id: "facebook",
+  //   title: "Facebook",
+  //   icon: IconBrandFacebookFilled as unknown as ReactNode,
+  //   sizeOptions: instagramDesignSizeOptions,
+  // },
+  // {
+  //   id: "tiktok",
+  //   title: "TikTok",
+  //   icon: IconBrandTiktokFilled as unknown as ReactNode,
+  //   sizeOptions: instagramDesignSizeOptions,
+  // },
+  // {
+  //   id: "youtube",
+  //   title: "YouTube",
+  //   icon: IconBrandSnapchatFilled as unknown as ReactNode,
+  //   sizeOptions: instagramDesignSizeOptions,
+  // },
+  // {
+  //   id: "others",
+  //   title: "Others",
+  //   icon: IconBrandSnapchatFilled as unknown as ReactNode,
+  //   sizeOptions: instagramDesignSizeOptions,
+  // },
 ];
 
 export type DeliveryOptionType = {
@@ -121,4 +221,47 @@ export const stories = [
   "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2ezkTi5QOaGxtUsVSORL3mHE2ADC5b8dc7whl0",
   "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eR7j6zUJyuGiFdea2YtlVjTNx7vmUkP80JKbI",
   "https://i.pinimg.com/736x/21/a1/e9/21a1e9700c2befaf7a9453600ace0292.jpg",
+];
+
+export const reelVideos = [
+  {
+    name: "ab5d50906702f92f53f36c74b61a1a6d.mp4",
+    key: "wGHSFKxTYo2euaBgYPChv1zUsDinaPFk7Beml9HfpbGxQXCg",
+    customId: null,
+    url: "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2euaBgYPChv1zUsDinaPFk7Beml9HfpbGxQXCg",
+    size: 1980718,
+    uploadedAt: "2025-02-12T09:41:49.000Z",
+  },
+  {
+    name: "3fd78dbe78afd13b817746f2daf1c7f5.mp4",
+    key: "wGHSFKxTYo2eFuCS8uMJOP4EZBQY6fiDqmRvs1hCpGrHyTb8",
+    customId: null,
+    url: "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eFuCS8uMJOP4EZBQY6fiDqmRvs1hCpGrHyTb8",
+    size: 1502250,
+    uploadedAt: "2025-02-12T09:41:49.000Z",
+  },
+  {
+    name: "f45a5af0c8d5b38912a5ad7afcf2e245.mp4",
+    key: "wGHSFKxTYo2eiiAHT40kchvTZMYlWVzn1i6ubCjmpULdGs3y",
+    customId: null,
+    url: "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eiiAHT40kchvTZMYlWVzn1i6ubCjmpULdGs3y",
+    size: 2262167,
+    uploadedAt: "2025-02-12T09:41:49.000Z",
+  },
+  {
+    name: "426508a6cdc744322242a1d65644205b_t1.mp4",
+    key: "wGHSFKxTYo2eliqM8UbJYmevBPfIdTkZtEisRAxuMSy21n9L",
+    customId: null,
+    url: "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eliqM8UbJYmevBPfIdTkZtEisRAxuMSy21n9L",
+    size: 756582,
+    uploadedAt: "2025-02-12T09:41:49.000Z",
+  },
+  {
+    name: "c022c6406ba455b908a1735131ffc4f3.mp4",
+    key: "wGHSFKxTYo2eWltbqSvr1m46CBZH8d5YhbJevRnguV72I0pN",
+    customId: null,
+    url: "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2eWltbqSvr1m46CBZH8d5YhbJevRnguV72I0pN",
+    size: 1296711,
+    uploadedAt: "2025-02-12T09:41:49.000Z",
+  },
 ];

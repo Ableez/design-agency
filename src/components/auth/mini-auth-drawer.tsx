@@ -26,8 +26,6 @@ const MiniAuthDrawer = ({ open, onOpenChange }: Props) => {
     brand: "",
   });
 
-  const pathName = usePathname();
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormState((prevState) => ({
       ...prevState,
@@ -36,7 +34,7 @@ const MiniAuthDrawer = ({ open, onOpenChange }: Props) => {
   };
 
   return (
-    <Drawer open={true} onOpenChange={onOpenChange}>
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Lets get to know you</DrawerTitle>

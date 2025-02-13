@@ -2,7 +2,7 @@ import "#/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, GoogleOneTap } from "@clerk/nextjs";
 
 import { TRPCReactProvider } from "#/trpc/react";
 import { ThemeProvider } from "#/components/theme-provider";
@@ -10,6 +10,7 @@ import { Toaster } from "#/components/ui/sonner";
 import { Toaster as ToastToaster } from "#/components/ui/toaster";
 import { dark } from "@clerk/themes";
 import { useTheme } from "next-themes";
+import AuthReminderDrawer from "#/components/auth/auth-reminder-drawer";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -29,6 +30,7 @@ export default function RootLayout({
         suppressContentEditableWarning
       >
         <body>
+          <GoogleOneTap />
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
@@ -37,6 +39,7 @@ export default function RootLayout({
             <TRPCReactProvider>{children}</TRPCReactProvider>
             <Toaster position="top-center" />
             <ToastToaster />
+            <AuthReminderDrawer />
           </ThemeProvider>
         </body>
       </html>

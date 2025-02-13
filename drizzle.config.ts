@@ -8,5 +8,5 @@ export default {
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  tablesFilter: ["aste-off_*"],
+  tablesFilter: ["asterisk_*"],
 } satisfies Config;

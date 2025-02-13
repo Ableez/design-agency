@@ -17,8 +17,6 @@ const DesignInfo = ({ params }: Props) => {
   const jobsCookie = sessionStorage.getItem(jobId);
   const jobFormState = JSON.parse(jobsCookie ?? "{}") as DesignJobData;
 
-  console.log("JOBSCOOKIES", jobsCookie);
-
   if (!jobsCookie) {
     return <ErrorMessage />;
   }

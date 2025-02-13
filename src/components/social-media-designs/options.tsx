@@ -2,10 +2,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   deliveryOptions,
-  designSizeOptions,
+  instagramDesignSizeOptions,
   platformOptions,
   purposeOptions,
   SocialFormState,
+  websiteDesignSizeOptions,
 } from "./data";
 import Image from "next/image";
 import { Button } from "../ui/button";
@@ -22,9 +23,18 @@ type Props = {};
 const SocialMediaDesignOptions = (props: Props) => {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
-
   const [socialFormState, setSocialFormState] =
     useState<SocialFormState | null>(null);
+
+  // find a designsize option that fits the platform thats all
+  const [designSizeOptions, setDesignSizeOptions] = useState(
+    socialFormState?.platform === "instagram"
+      ? instagramDesignSizeOptions
+      : socialFormState?.platform === "website"
+        ? websiteDesignSizeOptions
+        : // default to instagram
+          instagramDesignSizeOptions,
+  );
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -104,7 +114,29 @@ const SocialMediaDesignOptions = (props: Props) => {
 
   return (
     <div>
-      <div className="relative flex min-h-[40dvh] w-full -translate-y-[10dvh] flex-col gap-6 rounded-t-2xl bg-white p-6 shadow-2xl dark:bg-black">
+      <div className="relative flex min-h-[100dvh] w-full flex-col gap-6 rounded-t-2xl bg-white p-6 pb-20 shadow-2xl dark:bg-black">
+        <div className="flex flex-col gap-2">
+          <h4 className="pl-2 text-xs font-medium dark:text-neutral-600">
+            Platform
+          </h4>
+          <div className="grid grid-cols-2 gap-4">
+            {platformOptions.map((option) => (
+              <button
+                key={option.title}
+                className={`flex w-full place-items-center gap-4 rounded-2xl p-4 align-middle ring-2 ${
+                  socialFormState?.platform === option.id
+                    ? "ring-4 ring-blue-500 dark:hover:ring-blue-500"
+                    : "ring-transparent"
+                } dark:bg-neutral-900 dark:hover:ring-blue-600/40`}
+                onClick={() => handleSelect("platform", option.id)}
+              >
+                {/* {option.icon} */}
+                <h4>{option.title}</h4>
+              </button>
+            ))}
+          </div>
+        </div>
+
         <DesignSizeOptionPicker
           designSizeOptions={designSizeOptions}
           label="Pick a size"
@@ -140,27 +172,7 @@ const SocialMediaDesignOptions = (props: Props) => {
             ))}
           </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <h4 className="pl-2 text-xs font-medium dark:text-neutral-600">
-            Platform
-          </h4>
-          <div className="grid grid-cols-2 gap-4">
-            {platformOptions.map((option) => (
-              <button
-                key={option.title}
-                className={`flex w-full place-items-center gap-4 rounded-2xl p-4 align-middle ring-2 ${
-                  socialFormState?.platform === option.title
-                    ? "ring-4 ring-blue-500 dark:hover:ring-blue-500"
-                    : "ring-transparent"
-                } dark:bg-neutral-900 dark:hover:ring-blue-600/40`}
-                onClick={() => handleSelect("platform", option.title)}
-              >
-                {/* {option.icon} */}
-                <h4>{option.title}</h4>
-              </button>
-            ))}
-          </div>
-        </div>
+
         <DeliveryOptionPicker
           deliveryOptions={deliveryOptions}
           selectedOption={socialFormState?.deliveryOption ?? null}

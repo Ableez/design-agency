@@ -1,6 +1,7 @@
 "use client";
 import React, { ReactNode, useState } from "react";
 import { DesignSizeType } from "./social-media-designs/data";
+import Image from "next/image";
 
 type Props = {
   designSizeOptions: DesignSizeType[];
@@ -29,22 +30,42 @@ const DesignSizeOptionPicker = ({
       <h4 className="pl-2 text-xs font-medium dark:text-neutral-600">
         {label ?? "Choose aspect ratio"}
       </h4>
-      <div className="flex gap-4">
+      <div className="columns-2 gap-2 rounded-xl p-2 dark:bg-neutral-950 sm:columns-3">
         {designSizeOptions.map((option) => (
           <button
             key={option.title}
-            className={`grid w-full grid-rows-2 place-items-center gap-1 rounded-2xl pt-6 align-middle ring-2 ${
-              localSelectedOption === option.id ||
-              selectedOption === option.id
+            className={`mb-2 flex h-fit w-full break-inside-avoid flex-col place-items-center justify-start gap-2 rounded-xl p-2 ring-2 ${
+              localSelectedOption === option.id || selectedOption === option.id
                 ? "ring-4 ring-blue-500 dark:hover:ring-blue-500"
                 : "ring-transparent"
-            } dark:bg-neutral-900 dark:hover:ring-blue-600/40`}
+            } dark:bg-neutral-900`}
             onClick={() => handleOptionClick(option.id)}
           >
-            <div
-              className={`w-16 rounded-[4px] border-2 border-dashed dark:border-neutral-700`}
-            />
-            <h4 className={"text-sm dark:text-neutral-400"}>{option.title}</h4>
+            <div className="h-44 w-full overflow-clip rounded-xl bg-[#ccd5ff] p-2 dark:bg-[#ccd5ff11]">
+              <Image
+                src={
+                  option.image ??
+                  "https://b4b43dszid.ufs.sh/f/wGHSFKxTYo2ewNpv49xTYo2ezVpkbt37nPSHJ9vDQUrijamM"
+                }
+                alt={"Eg"}
+                width={600}
+                height={600}
+                className="h-full w-full object-contain"
+              />
+            </div>
+            <h4 className={"text-xs font-semibold dark:text-neutral-400"}>
+              <span className="text-[9.5px] font-bold uppercase">
+                {option.title}
+              </span>
+              <span className="mx-1 text-[9.5px] font-medium">•</span>
+              <span className="text-[9.5px] font-medium">
+                {option.dimensions}
+              </span>
+              <span className="mx-1 text-[9.5px] font-medium">•</span>
+              <span className="text-[9.5px] font-medium lowercase">
+                {option.unit}
+              </span>
+            </h4>
           </button>
         ))}
       </div>

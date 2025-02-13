@@ -123,11 +123,8 @@ const DesignInfoForm: React.FC<{
   }, []);
 
   const handleSubmit = useCallback(async () => {
-    console.log("images", images);
-    console.log({ description, images });
-
     if (!isSignedIn) {
-      toast("Just one last time, I promise.");
+      toast("Just one last thing, I promise.");
       setOpenAuthDrawer(true);
       return;
     }
@@ -213,7 +210,7 @@ const DesignInfoForm: React.FC<{
           className="resize-none"
           placeholder="Type here..."
           value={description}
-          onChange={handleDescriptionChange}
+          onChange={() => setOpenAuthDrawer(true)}
         />
         <Button className="mt-4 w-full" onClick={handleSubmit}>
           Continue

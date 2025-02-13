@@ -1,134 +1,28 @@
 {
-  "id": "1ab1a2af-d173-47c1-8329-b4ce2d931870",
+  "id": "9f6db8a7-03cb-4d4e-ba68-d17290d163f9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.aste-off_auth_account": {
-      "name": "aste-off_auth_account",
+    "public.asterisk_brand": {
+      "name": "asterisk_brand",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "account_id": {
-          "name": "account_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "provider_id": {
-          "name": "provider_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "access_token": {
-          "name": "access_token",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "refresh_token": {
-          "name": "refresh_token",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_token": {
-          "name": "id_token",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "access_token_expires_at": {
-          "name": "access_token_expires_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "refresh_token_expires_at": {
-          "name": "refresh_token_expires_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "scope": {
-          "name": "scope",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "password": {
-          "name": "password",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "aste-off_auth_account_user_id_aste-off_auth_user_id_fk": {
-          "name": "aste-off_auth_account_user_id_aste-off_auth_user_id_fk",
-          "tableFrom": "aste-off_auth_account",
-          "tableTo": "aste-off_auth_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.aste-off_brand": {
-      "name": "aste-off_brand",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "identity": {
-            "type": "byDefault",
-            "name": "aste-off_brand_id_seq",
-            "schema": "public",
-            "increment": "1",
-            "startWith": "1",
-            "minValue": "1",
-            "maxValue": "2147483647",
-            "cache": "1",
-            "cycle": false
-          }
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "owner": {
+          "name": "owner",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
@@ -159,30 +53,54 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "asterisk_brand_owner_asterisk_auth_user_id_fk": {
+          "name": "asterisk_brand_owner_asterisk_auth_user_id_fk",
+          "tableFrom": "asterisk_brand",
+          "tableTo": "asterisk_auth_user",
+          "columnsFrom": ["owner"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.aste-off_job": {
-      "name": "aste-off_job",
+    "public.asterisk_design_job": {
+      "name": "asterisk_design_job",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "identity": {
-            "type": "byDefault",
-            "name": "aste-off_job_id_seq",
-            "schema": "public",
-            "increment": "1",
-            "startWith": "1",
-            "minValue": "1",
-            "maxValue": "2147483647",
-            "cache": "1",
-            "cycle": false
-          }
+          "default": "gen_random_uuid()"
+        },
+        "size": {
+          "name": "size",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "purpose": {
+          "name": "purpose",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "platform": {
+          "name": "platform",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "delivery_speed": {
+          "name": "delivery_speed",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
         },
         "job_id": {
           "name": "job_id",
@@ -211,6 +129,109 @@
         },
         "reference_images": {
           "name": "reference_images",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "design_files": {
+          "name": "design_files",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "brand": {
+          "name": "brand",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "asterisk_design_job_brand_asterisk_brand_id_fk": {
+          "name": "asterisk_design_job_brand_asterisk_brand_id_fk",
+          "tableFrom": "asterisk_design_job",
+          "tableTo": "asterisk_brand",
+          "columnsFrom": ["brand"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "asterisk_design_job_user_id_asterisk_auth_user_id_fk": {
+          "name": "asterisk_design_job_user_id_asterisk_auth_user_id_fk",
+          "tableFrom": "asterisk_design_job",
+          "tableTo": "asterisk_auth_user",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.asterisk_job": {
+      "name": "asterisk_job",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "job_id": {
+          "name": "job_id",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "service": {
+          "name": "service",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "design_description": {
+          "name": "design_description",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reference_images": {
+          "name": "reference_images",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
@@ -221,25 +242,28 @@
           "primaryKey": false,
           "notNull": false
         },
-        "user_info": {
-          "name": "user_info",
+        "user_id": {
+          "name": "user_id",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'not_started'"
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "aste-off_job_user_info_aste-off_auth_user_id_fk": {
-          "name": "aste-off_job_user_info_aste-off_auth_user_id_fk",
-          "tableFrom": "aste-off_job",
-          "tableTo": "aste-off_auth_user",
-          "columnsFrom": [
-            "user_info"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+        "asterisk_job_user_id_asterisk_auth_user_id_fk": {
+          "name": "asterisk_job_user_id_asterisk_auth_user_id_fk",
+          "tableFrom": "asterisk_job",
+          "tableTo": "asterisk_auth_user",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -247,172 +271,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.aste-off_auth_passkey": {
-      "name": "aste-off_auth_passkey",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "public_key": {
-          "name": "public_key",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "credential_i_d": {
-          "name": "credential_i_d",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "counter": {
-          "name": "counter",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "device_type": {
-          "name": "device_type",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "backed_up": {
-          "name": "backed_up",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "transports": {
-          "name": "transports",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "aste-off_auth_passkey_user_id_aste-off_auth_user_id_fk": {
-          "name": "aste-off_auth_passkey_user_id_aste-off_auth_user_id_fk",
-          "tableFrom": "aste-off_auth_passkey",
-          "tableTo": "aste-off_auth_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.aste-off_auth_session": {
-      "name": "aste-off_auth_session",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "token": {
-          "name": "token",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "ip_address": {
-          "name": "ip_address",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "user_agent": {
-          "name": "user_agent",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "aste-off_auth_session_user_id_aste-off_auth_user_id_fk": {
-          "name": "aste-off_auth_session_user_id_aste-off_auth_user_id_fk",
-          "tableFrom": "aste-off_auth_session",
-          "tableTo": "aste-off_auth_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "aste-off_auth_session_token_unique": {
-          "name": "aste-off_auth_session_token_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
-        }
-      }
-    },
-    "public.aste-off_auth_user": {
-      "name": "aste-off_auth_user",
+    "public.asterisk_auth_user": {
+      "name": "asterisk_auth_user",
       "schema": "",
       "columns": {
         "id": {
@@ -462,60 +322,12 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "aste-off_auth_user_email_unique": {
-          "name": "aste-off_auth_user_email_unique",
+        "asterisk_auth_user_email_unique": {
+          "name": "asterisk_auth_user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       }
-    },
-    "public.aste-off_auth_verification": {
-      "name": "aste-off_auth_verification",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "identifier": {
-          "name": "identifier",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "value": {
-          "name": "value",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
     }
   },
   "enums": {},

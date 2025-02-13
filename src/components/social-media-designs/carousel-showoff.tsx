@@ -31,33 +31,35 @@ const CarouselShowoff = (props: Props) => {
   }, [api]);
 
   return (
-    <div className="sticky -top-2 left-0 h-[60dvh] w-full overflow-clip">
-      <Carousel
-        setApi={setApi}
-        plugins={[
-          Autoplay({
-            delay: 2000,
-          }),
-        ]}
-      >
-        <CarouselContent>
-          {stories.map((story) => (
-            <CarouselItem key={story} className="pt-1 md:basis-1/2">
-              <div>
+    <div>
+      <div className="sticky -top-2 left-0 h-[40dvh] w-full overflow-clip">
+        <Carousel
+          setApi={setApi}
+          plugins={[
+            Autoplay({
+              delay: 2000,
+            }),
+          ]}
+        >
+          <CarouselContent>
+            {stories.map((story) => (
+              <CarouselItem key={story} className="pt-1 md:basis-1/2">
                 <div>
-                  <Image
-                    alt="Story mock"
-                    src={story}
-                    width={400}
-                    height={800}
-                    className="h-screen w-full object-cover transition-opacity duration-500"
-                  />
+                  <div>
+                    <Image
+                      alt="Story mock"
+                      src={story}
+                      width={400}
+                      height={800}
+                      className="h-screen w-full object-cover transition-opacity duration-500"
+                    />
+                  </div>
                 </div>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      </div>
       <div className="absolute bottom-[42vh] flex h-28 w-full translate-y-10 items-center justify-center gap-2 bg-gradient-to-t from-black to-transparent py-2">
         {Array.from({ length: count }).map((_, index) => (
           <button

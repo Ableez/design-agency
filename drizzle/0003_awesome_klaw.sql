@@ -1,1 +1,0 @@
-ALTER TABLE "aste-off_design_job" ALTER COLUMN "reference_images" SET DATA TYPE text;

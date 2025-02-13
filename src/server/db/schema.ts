@@ -19,25 +19,28 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `aste-off_${name}`);
+export const createTable = pgTableCreator((name) => `asterisk_${name}`);
 
-export const user = createTable("auth_user", {
-  id: varchar("id").primaryKey(),
-  name: varchar("name").notNull(),
+export const user = createTable("user", {
+  id: varchar("id").primaryKey().notNull(),
+  username: varchar("username").notNull().unique(),
   email: varchar("email").notNull().unique(),
-  emailVerified: boolean("email_verified").notNull(),
-  image: varchar("image"),
+  profileImageUrl: varchar("profile_image_url"),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
 });
 
 export const userRelations = relations(user, ({ many }) => ({
-  designJobs: many(designJob),
-  brands: many(brands),
+  designJobs: many(designJob, {
+    relationName: "user_design_jobs",
+  }),
+  brands: many(brands, {
+    relationName: "user_brands",
+  }),
 }));
 
 export const brands = createTable("brand", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 256 }),
   owner: varchar("owner", { length: 256 }).references(() => user.id),
   logo: varchar("logo", { length: 256 }),
@@ -47,12 +50,16 @@ export const brands = createTable("brand", {
 });
 
 export const brandRelations = relations(brands, ({ many, one }) => ({
-  designJobs: many(designJob),
-  owner: one(user),
+  designJobs: many(designJob, { relationName: "brand_design_jobs" }),
+  owner: one(user, {
+    relationName: "user_brands",
+    fields: [brands.owner],
+    references: [user.id],
+  }),
 }));
 
 export const jobs = createTable("job", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: uuid("id").primaryKey().defaultRandom(),
   jobId: varchar("job_id", { length: 256 }).notNull(),
   timestamp: timestamp("timestamp", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
@@ -85,6 +92,19 @@ export const designJob = createTable("design_job", {
   username: varchar("username", { length: 256 }),
   email: varchar("email", { length: 256 }),
   phone: varchar("phone", { length: 256 }),
-  brand: varchar("brand", { length: 256 }),
+  brandId: uuid("brand").references(() => brands.id),
   userId: varchar("user_id").references(() => user.id),
 });
+
+export const designJobsRelations = relations(designJob, ({ many, one }) => ({
+  brand: one(brands, {
+    relationName: "brand_design_jobs",
+    fields: [designJob.brandId],
+    references: [brands.id],
+  }),
+  user: one(user, {
+    relationName: "user_design_jobs",
+    fields: [designJob.userId],
+    references: [user.id],
+  }),
+}));
