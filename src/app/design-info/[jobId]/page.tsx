@@ -50,7 +50,7 @@ const DesignInfo = ({ params }: Props) => {
 
     return (
       <div className="container mx-auto max-w-2xl bg-white dark:bg-black">
-        <header className="sticky top-0 mb-4 flex items-center justify-between bg-black/60 px-4 py-4 backdrop-blur-xl">
+        <header className="sticky top-0 mb-4 flex items-center justify-between bg-black/60 px-4 py-4 backdrop-blur-xl z-50">
           <div className="flex items-center gap-2">
             <Link
               href={`/${jobInfo.service.toLocaleLowerCase().replaceAll(" ", "-")}`}
@@ -69,7 +69,7 @@ const DesignInfo = ({ params }: Props) => {
 
           <Drawer>
             <DrawerTrigger>
-              <Button variant="ghost" className="flex items-center gap-2">
+              <Button variant="secondary" className="flex items-center gap-2">
                 <IconInfoCircleFilled className="h-6 w-6 text-blue-500" />
                 <span>Help</span>
               </Button>
@@ -78,7 +78,7 @@ const DesignInfo = ({ params }: Props) => {
               <DrawerHeader>
                 <DrawerTitle>Help</DrawerTitle>
               </DrawerHeader>
-              <div className="flex flex-col gap-2 p-4 text-sm dark:text-neutral-500 font-medium pb-16">
+              <div className="flex flex-col gap-2 p-6 pb-16 text-sm font-medium dark:text-neutral-500">
                 <p>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic
                   architecto velit dolore assumenda tempore ipsa nisi porro?
@@ -89,9 +89,7 @@ const DesignInfo = ({ params }: Props) => {
                   Eligendi quo fugiat voluptatem quas possimus autem aliquid
                   soluta eaque facere aperiam earum ipsa, iste voluptate dicta
                   optio accusamus ducimus consequuntur exercitationem, voluptas
-                  nisi? Quas alias omnis laborum in. Saepe ab atque
-                  reprehenderit officiis, quisquam obcaecati inventore impedit
-                  dolor nesciunt cupiditate sunt.
+                  nisi? Quas alias omnis.
                 </p>
                 <p>
                   Lorem ipsum, dolor sit amet consectetur adipisicing elit.

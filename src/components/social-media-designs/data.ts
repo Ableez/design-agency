@@ -203,6 +203,7 @@ export type DesignDeliveryOptionType = {
   title: string;
   duration: string;
   description: string;
+  durationInHours: number;
   digitalOnly?: boolean;
   price?: string;
   icon?: ComponentType<any> | ReactElement;
@@ -216,6 +217,7 @@ export const designDeliveryOptions: DesignDeliveryOptionType[] = [
     duration: "In 2-3 days",
     icon: IconTruckDelivery,
     id: "standard",
+    durationInHours: 48,
   },
   {
     title: "Express",
@@ -223,6 +225,7 @@ export const designDeliveryOptions: DesignDeliveryOptionType[] = [
     duration: "Under 24 hours",
     icon: IconTruckDelivery,
     id: "express",
+    durationInHours: 24,
   },
 ];
 

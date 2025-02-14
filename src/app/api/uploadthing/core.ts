@@ -21,9 +21,10 @@ export const ourFileRouter = {
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req }) => {
       const user = await getUser(req);
-      if (!user) throw new Error("[UPLOADTHING]: Unauthorized");
+      // User dont have to be signed in for now
+      // if (!user) throw new Error("[UPLOADTHING]: Unauthorized");
 
-      return { userId: user.id };
+      return { userId: user?.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       return { uploadedBy: metadata.userId, customId: v4() };

@@ -3,7 +3,13 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
-import { designJob, designSize, designDeliveryOption } from "../../db/schema";
+import {
+  designJob,
+  designSize,
+  designDeliveryOption,
+  user,
+} from "../../db/schema";
+import { redirect } from "next/navigation";
 
 // Input validation schemas
 const createDesignJobSchema = z.object({
@@ -23,7 +29,10 @@ const createDesignJobSchema = z.object({
   purpose: z.string().nullish(),
   designDeliveryOptionId: z.string().nullish(),
   brandId: z.string(),
-  userId: z.string(),
+  userId: z.string().nullable(),
+  deliveryDurationInHours: z.number(),
+  deliveryEmail: z.string().email(),
+  deliveryDate: z.string(),
 });
 
 const updateDesignJobSchema = z.object({
@@ -46,14 +55,16 @@ const updateDesignJobSchema = z.object({
 
 export const designJobsRouter = createTRPCRouter({
   // Create a new design job
-  create: protectedProcedure
+  create: publicProcedure
     .input(createDesignJobSchema)
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.user || !ctx.user.id) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
-
       try {
+        const userData = await ctx.db.query.user.findFirst({
+          where: eq(user.email, input.deliveryEmail),
+        });
+
+        console.log("SE3RVER", userData);
+
         const [data] = await ctx.db
           .insert(designJob)
           .values({
@@ -64,9 +75,14 @@ export const designJobsRouter = createTRPCRouter({
             referenceImages: input.referenceImages.map((img) => img.url),
             sizeId: input.sizeId,
             purpose: input.purpose,
-            designDeliveryOptionId: input.designDeliveryOptionId,
+            deliveryDurationInHours: input.deliveryDurationInHours,
+            deliveryEmail:
+              userData?.email ??
+              input.deliveryEmail ??
+              ctx.user?.emailAddresses[0]?.emailAddress,
+            deliveryDate: new Date(input.deliveryDate),
             brandId: input.brandId,
-            userId: input.userId,
+            userId: input.userId ?? userData?.id,
             timestamp: new Date(),
           })
           .returning();
@@ -91,7 +107,6 @@ export const designJobsRouter = createTRPCRouter({
           with: {
             brand: true,
             user: true,
-            deliveryOption: true,
             size: true,
           },
         });
@@ -132,7 +147,6 @@ export const designJobsRouter = createTRPCRouter({
           orderBy: (designJob, { desc }) => [desc(designJob.timestamp)],
           with: {
             brand: true,
-            deliveryOption: true,
             size: true,
           },
         });

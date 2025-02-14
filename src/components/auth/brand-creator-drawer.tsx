@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "../ui/drawer";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -13,6 +13,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "#/trpc/react";
 import { BrandSelect } from "#/server/db/schema-types";
+import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 const formSchema = z.object({
   brand: z.string().min(1, "Brand name is required"),
@@ -24,10 +26,18 @@ type FormValues = z.infer<typeof formSchema>;
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onFinished: (data: BrandSelect) => void;
+  onFinished: (data: BrandSelect & { error: string | null }) => void;
+  handleDeliveryEmailChange: (email: string) => void;
+  deliveryEmail: string | null;
 };
 
-const BrandCreatorDrawer = ({ open, onOpenChange, onFinished }: Props) => {
+const BrandCreatorDrawer = ({
+  open,
+  onOpenChange,
+  onFinished,
+  handleDeliveryEmailChange,
+  deliveryEmail,
+}: Props) => {
   const {
     register,
     handleSubmit,
@@ -36,30 +46,43 @@ const BrandCreatorDrawer = ({ open, onOpenChange, onFinished }: Props) => {
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });
+  const { isSignedIn } = useUser();
 
   const { mutateAsync: createBrand, isPending: isLoading } =
     api.brand.create.useMutation({
-      onSuccess: () => {
-        toast.success("Brand created successfully!");
-        onOpenChange(false);
-        reset();
-      },
       onError: (error) => {
         toast.error("Failed to create brand: " + error.message);
       },
     });
+  const [existingBrand, setExistingBrand] = useState<BrandSelect | null>(null);
 
   const onSubmit = async (data: FormValues) => {
+    if (!isSignedIn && !deliveryEmail) {
+      toast("We are gonna need your email too.");
+      return;
+    }
+
     const res = await createBrand({
       name: data.brand,
       industry: data.industry,
+      email: deliveryEmail!,
     });
 
-    if (res) {
-      onFinished(res);
+    console.log("RES", res);
+
+    if (res?.error === "Brand already exists") {
+      setExistingBrand(res as BrandSelect & { error: string | null });
+      toast(res?.error);
+      return;
+    } else {
+      toast("🥂🎉Brand created!");
+      onOpenChange(false);
+      reset();
+      onFinished(res as BrandSelect & { error: string | null });
     }
   };
 
+  console.log("EXISTING BRAND", existingBrand);
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
@@ -67,6 +90,36 @@ const BrandCreatorDrawer = ({ open, onOpenChange, onFinished }: Props) => {
           <DrawerTitle>Lets get to know you</DrawerTitle>
         </DrawerHeader>
         <div className="p-4">
+          {existingBrand && (
+            <div className="mb-2 flex cursor-pointer place-items-center justify-between gap-3 rounded-2xl bg-gradient-to-r p-2 px-4 align-middle text-sm font-medium dark:from-blue-950/30 dark:to-purple-950/30">
+              <div className="flex place-items-center justify-center gap-2 rounded-full align-middle">
+                <Image
+                  src={existingBrand.logo ?? "/favicon.png"}
+                  alt="Brand logo"
+                  width={30}
+                  height={30}
+                  className="opacity-60 grayscale"
+                />
+                <h4 className="text-lg font-semibold capitalize">
+                  {existingBrand.name}
+                </h4>
+              </div>
+              <Button
+                onClick={() => {
+                  onFinished(
+                    existingBrand as BrandSelect & { error: string | null },
+                  );
+                  toast("😎 Fresh");
+                  onOpenChange(false);
+                  reset();
+                }}
+                variant={"ghost"}
+                className="px-4 py-1"
+              >
+                Use it
+              </Button>
+            </div>
+          )}
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex min-h-[40dvh] flex-col gap-2.5 pb-10"
@@ -98,6 +151,22 @@ const BrandCreatorDrawer = ({ open, onOpenChange, onFinished }: Props) => {
               </Label>
               <Input
                 {...register("industry")}
+                placeholder="Type here..."
+                className="text-sm"
+              />
+              {errors.industry && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.industry.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Label className="mb-2 pl-2 text-xs dark:text-neutral-400">
+                Your email (We will your design here)
+              </Label>
+              <Input
+                onChange={(e) => handleDeliveryEmailChange(e.target.value)}
+                value={deliveryEmail ?? ""}
                 placeholder="Type here..."
                 className="text-sm"
               />

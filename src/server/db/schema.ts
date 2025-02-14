@@ -102,9 +102,9 @@ export const designJob = createTable("design_job", {
   sizeId: uuid("size_id").references(() => designSize.id),
   purpose: varchar("purpose", { length: 256 }),
   service: varchar("service", { length: 256 }),
-  designDeliveryOptionId: uuid("design_delivery_option").references(
-    () => designDeliveryOption.id,
-  ),
+  deliveryDurationInHours: integer("delivery_duration_in_hours").notNull(),
+  deliveryDate: timestamp("delivery_date", { withTimezone: true }).notNull(),
+  deliveryEmail: varchar("delivery_email", { length: 256 }).notNull(),
   jobId: varchar("job_id", { length: 256 }).notNull(),
   timestamp: timestamp("timestamp", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
@@ -129,11 +129,6 @@ export const designJobsRelations = relations(designJob, ({ many, one }) => ({
     relationName: "user_design_jobs",
     fields: [designJob.userId],
     references: [user.id],
-  }),
-  deliveryOption: one(designDeliveryOption, {
-    relationName: "delivery_option_design_jobs",
-    fields: [designJob.designDeliveryOptionId],
-    references: [designDeliveryOption.id],
   }),
   size: one(designSize, {
     relationName: "size_design_jobs",
