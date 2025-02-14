@@ -108,7 +108,6 @@ const DesignInfoForm: React.FC<{
     });
   }, []);
 
-  console.log("IMAGES", images);
   useEffect(() => {
     return () => {
       images.forEach((img) => {
@@ -134,25 +133,16 @@ const DesignInfoForm: React.FC<{
 
     setImages((prev) => [...prev, ...newImages]);
 
-    // Add clientId to file metadata
-    return files.map((file, index) => {
-      return new File([file], file.name, {
-        type: file.type,
-        // @ts-ignore - Custom metadata
-        customId: newImages[index].clientId,
-      });
-    });
+    return files;
   }, []);
   const handleUploadComplete = useCallback(
     (res: ClientUploadedFileData<{ customId: string }>[]) => {
       const updates = res.map((file) => ({
-        // Properly access the customId from metadata
         name: file.name,
         url: file.url,
       }));
 
       console.log("UPLOAD COMPLETE", res);
-
       console.log("UPDATES", updates);
 
       setImages((prev) =>
@@ -161,7 +151,6 @@ const DesignInfoForm: React.FC<{
 
           console.log("UPDATE", update);
           if (!update) {
-            // Mark as failed if not found in response
             if (img.previewUrl) URL.revokeObjectURL(img.previewUrl);
             return { ...img, previewUrl: undefined };
           }

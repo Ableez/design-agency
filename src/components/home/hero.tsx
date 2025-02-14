@@ -3,6 +3,7 @@ import Services from "./services";
 import { Spotlight } from "./spotlight-bg";
 import Link from "next/link";
 import { currentUser } from "@clerk/nextjs/server";
+import SendMail from "./send-mail";
 
 export default async function HomeHero() {
   const user = await currentUser();
@@ -22,6 +23,9 @@ export default async function HomeHero() {
         </h4>
         <h4 className="dark:text-neutral-400">How can we help you today?</h4>
       </div>
+
+      <SendMail />
+
       <Services />
     </div>
   );

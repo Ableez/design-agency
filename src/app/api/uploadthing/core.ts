@@ -1,7 +1,6 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { v4 } from "uuid";
-import { metadata } from "../../layout";
 
 const f = createUploadthing();
 

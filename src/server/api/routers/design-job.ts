@@ -10,6 +10,7 @@ import {
   user,
 } from "../../db/schema";
 import { redirect } from "next/navigation";
+import { mailer } from "#/lib/mailer";
 
 // Input validation schemas
 const createDesignJobSchema = z.object({
@@ -87,6 +88,12 @@ export const designJobsRouter = createTRPCRouter({
           })
           .returning();
 
+        await mailer.sendMail({
+          from: process.env.EMAIL_FROM || "noreply@asteriskda.com",
+          to: "djayableez@gmail.com",
+          subject: "We have received your order",
+        });
+
         return data ?? null;
       } catch (error) {
         console.error("Error creating design job:", error);
@@ -94,6 +101,8 @@ export const designJobsRouter = createTRPCRouter({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to create design job",
         });
+      } finally {
+        // send email to me regard less
       }
     }),
 
