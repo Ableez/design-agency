@@ -50,7 +50,7 @@ const DesignInfo = ({ params }: Props) => {
 
     return (
       <div className="container mx-auto max-w-2xl bg-white dark:bg-black">
-        <header className="sticky top-0 mb-4 flex items-center justify-between bg-black/60 px-4 py-4 backdrop-blur-xl z-50">
+        <header className="sticky top-0 z-50 mb-4 flex items-center justify-between bg-black/60 px-4 py-4 backdrop-blur-xl">
           <div className="flex items-center gap-2">
             <Link
               href={`/${jobInfo.service.toLocaleLowerCase().replaceAll(" ", "-")}`}

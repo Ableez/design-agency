@@ -8,20 +8,16 @@ import { date } from "drizzle-orm/mysql-core";
 import { BrandSelect } from "#/server/db/schema-types";
 
 export const brandRouter = createTRPCRouter({
-  getUserBrandByUserId: protectedProcedure
-    .input(z.object({ userId: z.string().optional() }))
-    .query(async ({ input, ctx }) => {
-      if (!input.userId || !ctx.user || !ctx.user.id) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
+  getUserBrandByUserId: protectedProcedure.query(async ({ input, ctx }) => {
+    if (!ctx.user || !ctx.user.id) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
 
-      const [data] = await ctx.db
-        .select()
-        .from(brands)
-        .where(eq(brands.owner, ctx.user.id));
-
-      return data ?? null;
-    }),
+    const data = await ctx.db.query.brands.findMany({
+      where: eq(brands.owner, ctx.user.id),
+    });
+    return data ?? null;
+  }),
 
   create: publicProcedure
     .input(

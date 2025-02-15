@@ -46,7 +46,7 @@ const BrandCreatorDrawer = ({
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
 
   const { mutateAsync: createBrand, isPending: isLoading } =
     api.brand.create.useMutation({
@@ -65,7 +65,7 @@ const BrandCreatorDrawer = ({
     const res = await createBrand({
       name: data.brand,
       industry: data.industry,
-      email: deliveryEmail!,
+      email: user?.emailAddresses[0]?.emailAddress ?? deliveryEmail!,
     });
 
     console.log("RES", res);
@@ -82,7 +82,6 @@ const BrandCreatorDrawer = ({
     }
   };
 
-  console.log("EXISTING BRAND", existingBrand);
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
@@ -160,22 +159,24 @@ const BrandCreatorDrawer = ({
                 </p>
               )}
             </div>
-            <div>
-              <Label className="mb-2 pl-2 text-xs dark:text-neutral-400">
-                Your email (We will your design here)
-              </Label>
-              <Input
-                onChange={(e) => handleDeliveryEmailChange(e.target.value)}
-                value={deliveryEmail ?? ""}
-                placeholder="Type here..."
-                className="text-sm"
-              />
-              {errors.industry && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.industry.message}
-                </p>
-              )}
-            </div>
+            {!isSignedIn && (
+              <div>
+                <Label className="mb-2 pl-2 text-xs dark:text-neutral-400">
+                  Your email (We will your design here)
+                </Label>
+                <Input
+                  onChange={(e) => handleDeliveryEmailChange(e.target.value)}
+                  value={deliveryEmail ?? ""}
+                  placeholder="Type here..."
+                  className="text-sm"
+                />
+                {errors.industry && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.industry.message}
+                  </p>
+                )}
+              </div>
+            )}
             <Button type="submit" className="mt-4" disabled={isLoading}>
               {isLoading ? "Creating..." : "Complete order"}
             </Button>
